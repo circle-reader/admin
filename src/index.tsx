@@ -1,21 +1,23 @@
 import Error from '@/error';
+import { Spin } from 'antd';
 import Layout from '@/layout';
-import Rule from '@/pages/rule';
-import User from '@/pages/user';
-import Code from '@/pages/code';
-import { useEffect } from 'react';
-import Order from '@/pages/order';
-import Store from '@/pages/store';
-import Donate from '@/pages/donate';
-import Expire from '@/pages/expire';
-import Backup from '@/pages/backup';
-import Config from '@/pages/config';
-import Service from '@/pages/service';
-import Message from '@/pages/message';
-import Feedback from '@/pages/feedback';
 import { useApp } from 'circle-react-hook';
+import { lazy, Suspense, useEffect } from 'react';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import './index.less';
+
+const Rule = lazy(() => import('@/pages/rule'));
+const User = lazy(() => import('@/pages/user'));
+const Code = lazy(() => import('@/pages/code'));
+const Order = lazy(() => import('@/pages/order'));
+const Store = lazy(() => import('@/pages/store'));
+const Donate = lazy(() => import('@/pages/donate'));
+const Expire = lazy(() => import('@/pages/expire'));
+const Backup = lazy(() => import('@/pages/backup'));
+const Config = lazy(() => import('@/pages/config'));
+const Service = lazy(() => import('@/pages/service'));
+const Message = lazy(() => import('@/pages/message'));
+const Feedback = lazy(() => import('@/pages/feedback'));
 
 const router = createHashRouter([
   {
@@ -83,5 +85,9 @@ export default function App() {
     document.title = `${app.i18n('title')} - ${document.title}`;
   }, []);
 
-  return <RouterProvider router={router} />;
+  return (
+    <Suspense fallback={<Spin />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  );
 }

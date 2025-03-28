@@ -1,9 +1,21 @@
 import Update from './update';
-import Tooltip from '@/components/tooltip';
 import { useState, useEffect } from 'react';
 import { usePager } from 'circle-react-hook';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Space, Modal, Table, Button, Popconfirm } from 'antd';
+import {
+  Tag,
+  Form,
+  Input,
+  Space,
+  Modal,
+  Table,
+  Button,
+  Popconfirm,
+  Typography,
+} from 'antd';
+import './index.less';
+
+const { Text } = Typography;
 
 export default function Rule() {
   const [form] = Form.useForm();
@@ -18,14 +30,18 @@ export default function Rule() {
   const handleClose = () => {
     setEditing(null);
   };
-  const handleFinish = (data: { id?: string; body: string }) => {
+  const handleFinish = (data: {
+    id?: string;
+    body: string;
+    active: boolean;
+  }) => {
     onSubmiting(true);
     (data.id
       ? app.fetch('rule/update', {
-          data,
+          data: { ...data, active: data.active ? '1' : '0' },
         })
       : app.fetch('rule/generate', {
-          data,
+          data: { ...data, active: data.active ? '1' : '0' },
         })
     )
       .then(() => {
@@ -42,7 +58,7 @@ export default function Rule() {
 
   useEffect(() => {
     if (editing) {
-      form.setFieldsValue(editing);
+      form.setFieldsValue({ ...editing, active: '1' === editing.active });
     } else {
       form.resetFields();
     }
@@ -62,7 +78,12 @@ export default function Rule() {
           onCancel={handleClose}
           okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
           modalRender={(dom) => (
-            <Form form={form} name="rule" onFinish={handleFinish}>
+            <Form
+              form={form}
+              name="rule"
+              onFinish={handleFinish}
+              initialValues={{ active: true }}
+            >
               {dom}
             </Form>
           )}
@@ -93,8 +114,14 @@ export default function Rule() {
         columns={[
           {
             width: '10%',
-            title: 'ID',
-            dataIndex: 'id',
+            title: '状态',
+            dataIndex: 'active',
+            render: (val) =>
+              '0' === val ? (
+                <Tag>草稿</Tag>
+              ) : (
+                <Tag color="success"> 已发布</Tag>
+              ),
           },
           {
             width: '80%',
@@ -102,9 +129,12 @@ export default function Rule() {
             dataIndex: 'body',
             render: (val) => {
               return (
-                <Tooltip title={val} style={{ maxWidth: 800 }}>
-                  {val}
-                </Tooltip>
+                <Space size={4} align="start">
+                  <Text copyable={{ text: val }} />
+                  <pre className="rule-code">
+                    {JSON.stringify(val, null, ' ')}
+                  </pre>
+                </Space>
               );
             },
           },

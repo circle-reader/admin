@@ -20,12 +20,12 @@ module.exports = {
     '@ant-design/icons': 'AntDesignIcons',
   },
   output: {
-    filename: 'admin.js',
+    // filename: 'admin.js',
     // path: '/Users/ranhe/circle/web/public/controller',
-    path: '/Users/ranhe/circle/website/drupal/ranhe/controller',
-    // filename: '[name].js',
-    // path: path.resolve(__dirname, '../dist'),
-    publicPath: '/',
+    // path: '/Users/ranhe/circle/website/drupal/ranhe/controller',
+    filename: '[name].js',
+    path: path.resolve(__dirname, '../dist'),
+    publicPath: '/ranhe/controller/',
   },
   resolve: {
     alias: {

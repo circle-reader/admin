@@ -1,4 +1,4 @@
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Switch, Input } from 'antd';
 
 interface IProps {
   loading: boolean;
@@ -21,6 +21,9 @@ export default function Update(props: IProps) {
     <>
       <Form.Item hidden name="id">
         <Input />
+      </Form.Item>
+      <Form.Item name="active">
+        <Switch checkedChildren="发布" unCheckedChildren="草稿" />
       </Form.Item>
       <Form.Item name="body" rules={[{ required: true }, { validator }]}>
         <Input.TextArea

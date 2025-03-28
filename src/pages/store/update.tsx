@@ -9,7 +9,7 @@ export default function Update(props: IProps) {
 
   return (
     <>
-      <Form.Item hidden name="id">
+      <Form.Item hidden name="nid">
         <Input />
       </Form.Item>
       <Form.Item name="reply">

@@ -26,11 +26,11 @@ export default function Store() {
   const handleClose = () => {
     setEditing(null);
   };
-  const handleFinish = (data: { id: string; reply: string }) => {
+  const handleFinish = (data: { nid: string; reply: string }) => {
     onSubmiting(true);
     app
       .fetch('store/update', {
-        data,
+        data: { id: data.nid, reply: data.reply },
       })
       .then(() => {
         handleClose();
@@ -152,7 +152,39 @@ export default function Store() {
             dataIndex: 'id',
             render: (id, record) => {
               if (record.active === '1') {
-                return null;
+                return (
+                  <Popconfirm
+                    title="更新应用"
+                    description="确认更新应用吗?"
+                    onConfirm={() => {
+                      onSubmiting(true);
+                      app
+                        .fetch('store/promoted', {
+                          data: {
+                            id,
+                            uid: record.uid,
+                            active: '0' === record.promoted ? '1' : '0',
+                          },
+                        })
+                        .then(refetch)
+                        .catch((err) => {
+                          app.error(err && err.message ? err.message : err);
+                        })
+                        .finally(() => {
+                          onSubmiting(false);
+                        });
+                    }}
+                  >
+                    <Button
+                      size="small"
+                      type="primary"
+                      loading={submiting}
+                      danger={'1' === record.promoted}
+                    >
+                      {'1' === record.promoted ? '不推荐' : '推荐'}
+                    </Button>
+                  </Popconfirm>
+                );
               }
               return (
                 <Space>

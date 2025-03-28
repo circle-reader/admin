@@ -3,7 +3,16 @@ import Tooltip from '@/components/tooltip';
 import { useState, useEffect } from 'react';
 import { usePager } from 'circle-react-hook';
 import { PlusOutlined } from '@ant-design/icons';
-import { Form, Input, Space, Modal, Table, Button, Popconfirm } from 'antd';
+import {
+  Tag,
+  Form,
+  Input,
+  Space,
+  Modal,
+  Table,
+  Button,
+  Popconfirm,
+} from 'antd';
 
 export default function Message() {
   const [form] = Form.useForm();
@@ -18,14 +27,19 @@ export default function Message() {
   const handleClose = () => {
     setEditing(null);
   };
-  const handleFinish = (data: { id?: string; title: string; body: string }) => {
+  const handleFinish = (data: {
+    id?: string;
+    title: string;
+    body: string;
+    active: boolean;
+  }) => {
     onSubmiting(true);
     (data.id
       ? app.fetch('message/update', {
-          data,
+          data: { ...data, active: data.active ? '1' : '0' },
         })
       : app.fetch('message/generate', {
-          data,
+          data: { ...data, active: data.active ? '1' : '0' },
         })
     )
       .then(() => {
@@ -42,7 +56,7 @@ export default function Message() {
 
   useEffect(() => {
     if (editing) {
-      form.setFieldsValue(editing);
+      form.setFieldsValue({ ...editing, active: '1' === editing.active });
     } else {
       form.resetFields();
     }
@@ -62,7 +76,12 @@ export default function Message() {
           onCancel={handleClose}
           okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
           modalRender={(dom) => (
-            <Form form={form} name="message" onFinish={handleFinish}>
+            <Form
+              form={form}
+              name="message"
+              onFinish={handleFinish}
+              initialValues={{ active: true }}
+            >
               {dom}
             </Form>
           )}
@@ -92,7 +111,14 @@ export default function Message() {
         }}
         columns={[
           {
-            width: '30%',
+            width: '10%',
+            title: '状态',
+            dataIndex: 'active',
+            render: (val) =>
+              '0' === val ? <Tag>草稿</Tag> : <Tag color="success">已发布</Tag>,
+          },
+          {
+            width: '20%',
             title: '标题',
             dataIndex: 'title',
             render: (val) => {

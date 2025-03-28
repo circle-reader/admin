@@ -8,7 +8,7 @@ export default function Config() {
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
-    uri: 'storage/list_data',
+    uri: 'storage/list_config',
   });
   const handleClose = () => {
     setEditing(null);
@@ -16,7 +16,7 @@ export default function Config() {
   const handleFinish = (data: { id: string; data: string }) => {
     onSubmiting(true);
     app
-      .fetch('storage/update_data', {
+      .fetch('storage/update_config', {
         data,
       })
       .then(() => {
