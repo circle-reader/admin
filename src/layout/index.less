@@ -1,0 +1,39 @@
+.ant-layout.layout-wrapper {
+  min-height: 100vh;
+}
+
+.ant-layout {
+  .ant-layout-header {
+    display: flex;
+    background: var(--bg);
+    justify-content: space-between;
+    .ant-menu {
+      background: transparent;
+    }
+    .user-name {
+      cursor: pointer;
+      line-height: 64px;
+      min-width: 60px;
+      text-align: right;
+    }
+  }
+  .ant-layout-content {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (max-width: 620px) {
+  .ant-layout {
+    .ant-layout-header {
+      padding: 0;
+      max-width: 100%;
+      overflow: auto;
+      .user-name {
+        display: none;
+      }
+    }
+  }
+}
