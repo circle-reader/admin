@@ -36,13 +36,23 @@ export default function User() {
         }}
         columns={[
           {
-            width: '25%',
+            width: '40%',
             title: '用户',
             dataIndex: 'uid',
             render: (val, record) => {
               return (
                 <Space split="-">
-                  <span>{record.name || '匿名'}</span>
+                  <Paragraph style={{ margin: 0 }} copyable>
+                    {record.name}
+                  </Paragraph>
+                  {record.mail && (
+                    <Paragraph
+                      style={{ margin: 0 }}
+                      copyable={{ text: record.mail }}
+                    >
+                      &lt;{record.mail}&gt;
+                    </Paragraph>
+                  )}
                   <Paragraph style={{ margin: 0 }} copyable>
                     {val || '--'}
                   </Paragraph>
@@ -51,7 +61,40 @@ export default function User() {
             },
           },
           {
-            width: '20%',
+            width: '25%',
+            title: '角色',
+            dataIndex: 'roles',
+            render: (val) => {
+              if (!Array.isArray(val)) {
+                return '--';
+              }
+              return (
+                <Space split="-">
+                  {val.map((rid) => {
+                    let role = '非法';
+                    if (rid === 'member') {
+                      role = '高级帐户';
+                    } else if (rid === 'premium') {
+                      role = '专业帐户';
+                    } else if (rid === 'administrator') {
+                      role = '管理员';
+                    }
+                    return (
+                      <Paragraph
+                        key={rid}
+                        style={{ margin: 0 }}
+                        copyable={{ text: rid }}
+                      >
+                        {role}
+                      </Paragraph>
+                    );
+                  })}
+                </Space>
+              );
+            },
+          },
+          {
+            width: '10%',
             title: '状态',
             dataIndex: 'status',
             render: (val) => {
@@ -63,15 +106,7 @@ export default function User() {
             },
           },
           {
-            width: '30%',
-            title: '邮箱',
-            dataIndex: 'mail',
-            render: (val) => {
-              return val ? <Paragraph copyable>{val}</Paragraph> : '--';
-            },
-          },
-
-          {
+            align: 'right',
             title: '创建时间',
             dataIndex: 'created',
             render: (val) => dayjs(val * 1000).format('YYYY-MM-DD HH:mm:ss'),

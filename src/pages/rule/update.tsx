@@ -27,9 +27,9 @@ export default function Update(props: IProps) {
       </Form.Item>
       <Form.Item name="body" rules={[{ required: true }, { validator }]}>
         <Input.TextArea
-          rows={5}
+          rows={15}
           showCount
-          maxLength={1000}
+          maxLength={3000}
           placeholder="规则"
           autoComplete="off"
         />

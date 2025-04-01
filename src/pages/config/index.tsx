@@ -44,6 +44,7 @@ export default function Config() {
       <Space className="wrapper-header">
         <div />
         <Modal
+          width={880}
           footer={null}
           title="管理"
           open={!!editing}

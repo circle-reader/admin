@@ -24,7 +24,7 @@ export default function CTooltip(props: IProps) {
 
   return (
     <Tooltip title={open ? title : null} {...resetProps}>
-      <span title={title} ref={container} className="tooltip" style={style}>
+      <span ref={container} className="tooltip" style={style}>
         {children}
       </span>
     </Tooltip>

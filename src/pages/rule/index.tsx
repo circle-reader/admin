@@ -71,7 +71,7 @@ export default function Rule() {
           添加
         </Button>
         <Modal
-          width={600}
+          width={880}
           footer={null}
           title="管理规则"
           open={!!editing}

@@ -19,7 +19,7 @@ export default function Update(props: IProps) {
         <Switch checkedChildren="发布" unCheckedChildren="草稿" />
       </Form.Item>
       <Form.Item name="body" rules={[{ required: true }]}>
-        <Input.TextArea rows={5} autoComplete="off" placeholder="内容" />
+        <Input.TextArea rows={15} autoComplete="off" placeholder="内容" />
       </Form.Item>
       <Form.Item>
         <Button block type="primary" htmlType="submit" loading={loading}>

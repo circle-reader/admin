@@ -21,11 +21,11 @@ module.exports = {
   },
   output: {
     // filename: 'admin.js',
-    // path: '/Users/ranhe/circle/web/public/controller',
+    // path: '/Users/ranhe/circle/web/dev/controller',
     // path: '/Users/ranhe/circle/website/drupal/ranhe/controller',
     filename: '[name].js',
     path: path.resolve(__dirname, '../dist'),
-    publicPath: '/ranhe/controller/',
+    publicPath: '/',
   },
   resolve: {
     alias: {

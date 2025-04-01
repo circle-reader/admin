@@ -13,6 +13,7 @@ import {
   Table,
   Button,
   Switch,
+  Select,
   Typography,
   Popconfirm,
 } from 'antd';
@@ -22,14 +23,19 @@ const { Paragraph } = Typography;
 export default function Code() {
   const [form] = Form.useForm();
   const [code, onCode] = useState([]);
-  const [order, onOrder] = useState('active');
+  const [expire, onExpire] = useState('0');
+  const [status, onStatus] = useState('1');
+  const [role, onRole] = useState('member');
   const [deleteing, onDeleteing] = useState(false);
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
     uri: 'code/list',
     query: {
-      order,
+      role,
+      status,
+      expire,
+      order: 'active',
     },
   });
   const handleOpen = () => {
@@ -42,7 +48,7 @@ export default function Code() {
     onCode([]);
   };
   const handleSwitchChange = (checked: boolean) => {
-    onOrder(checked ? 'active' : 'used');
+    onStatus(checked ? '1' : '0');
   };
   const handleFinish = (values: {
     code?: string;
@@ -124,10 +130,44 @@ export default function Code() {
         </Modal>
         <Space>
           <Switch
-            checkedChildren="状态"
+            checkedChildren="待用"
             unCheckedChildren="使用"
-            checked={order === 'active'}
+            checked={status === '1'}
             onChange={handleSwitchChange}
+          />
+          <Select
+            value={role}
+            onChange={onRole}
+            style={{ width: 100 }}
+            options={[
+              {
+                value: 'member',
+                label: '高级帐户',
+              },
+              {
+                value: 'premium',
+                label: '专业帐户',
+              },
+            ]}
+          />
+          <Select
+            value={expire}
+            onChange={onExpire}
+            style={{ width: 80 }}
+            options={[
+              {
+                value: '0',
+                label: '终身',
+              },
+              {
+                value: '1',
+                label: '1月',
+              },
+              {
+                value: '12',
+                label: '12月',
+              },
+            ]}
           />
           <Input.Search
             allowClear

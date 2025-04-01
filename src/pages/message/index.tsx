@@ -13,6 +13,7 @@ import {
   Button,
   Popconfirm,
 } from 'antd';
+import './index.less';
 
 export default function Message() {
   const [form] = Form.useForm();
@@ -69,7 +70,7 @@ export default function Message() {
           添加
         </Button>
         <Modal
-          width={600}
+          width={880}
           footer={null}
           title="管理"
           open={!!editing}
@@ -131,7 +132,17 @@ export default function Message() {
             dataIndex: 'body',
             render: (val) => {
               return (
-                <Tooltip title={val} style={{ maxWidth: 600 }}>
+                <Tooltip
+                  trigger={['click']}
+                  className="inner-tooltip"
+                  rootClassName="root-tooltip"
+                  title={
+                    <div
+                      className="modal-tooltip"
+                      dangerouslySetInnerHTML={{ __html: val }}
+                    />
+                  }
+                >
                   {val}
                 </Tooltip>
               );

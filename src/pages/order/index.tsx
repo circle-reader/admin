@@ -44,7 +44,7 @@ export default function Order() {
         }}
         columns={[
           {
-            width: '20%',
+            width: '18%',
             title: '用户',
             dataIndex: 'uid',
             render: (val, record) => {
@@ -66,7 +66,7 @@ export default function Order() {
             },
           },
           {
-            width: '15%',
+            width: '10%',
             title: '状态',
             dataIndex: 'status',
             render: (val) => {
@@ -75,12 +75,12 @@ export default function Order() {
             },
           },
           {
-            width: '28%',
+            width: '30%',
             title: '支付方式',
             dataIndex: 'method',
           },
           {
-            width: '10%',
+            width: '15%',
             title: '过期时间',
             dataIndex: 'expire',
             render: (val) => {
