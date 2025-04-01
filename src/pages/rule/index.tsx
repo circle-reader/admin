@@ -1,4 +1,5 @@
 import Update from './update';
+import { parse } from 'circle-utils';
 import { useState, useEffect } from 'react';
 import { usePager } from 'circle-react-hook';
 import { PlusOutlined } from '@ant-design/icons';
@@ -132,7 +133,7 @@ export default function Rule() {
                 <Space size={4} align="start">
                   <Text copyable={{ text: val }} />
                   <pre className="rule-code">
-                    {JSON.stringify(val, null, ' ')}
+                    {JSON.stringify(parse(val), null, ' ')}
                   </pre>
                 </Space>
               );
