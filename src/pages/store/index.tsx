@@ -17,7 +17,8 @@ import {
 
 export default function Store() {
   const [form] = Form.useForm();
-  const [approve, onApprove] = useState(false);
+  const [approve, onApprove] = useState('');
+  const [promoted, onPromoted] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
@@ -157,7 +158,7 @@ export default function Store() {
                     title="更新应用"
                     description="确认更新应用吗?"
                     onConfirm={() => {
-                      onSubmiting(true);
+                      onPromoted(id);
                       app
                         .fetch('store/promoted', {
                           data: {
@@ -171,14 +172,14 @@ export default function Store() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onSubmiting(false);
+                          onPromoted('');
                         });
                     }}
                   >
                     <Button
                       size="small"
                       type="primary"
-                      loading={submiting}
+                      loading={promoted === id}
                       danger={'1' === record.promoted}
                     >
                       {'1' === record.promoted ? '不推荐' : '推荐'}
@@ -192,7 +193,7 @@ export default function Store() {
                     title="审核应用"
                     description="确认审核应用吗?"
                     onConfirm={() => {
-                      onApprove(true);
+                      onApprove(id);
                       app
                         .fetch('store/update', {
                           data: {
@@ -204,7 +205,7 @@ export default function Store() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onApprove(false);
+                          onApprove('');
                         });
                     }}
                   >
@@ -212,7 +213,7 @@ export default function Store() {
                       danger
                       size="small"
                       type="primary"
-                      loading={approve}
+                      loading={approve === id}
                     >
                       审核
                     </Button>

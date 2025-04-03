@@ -20,7 +20,7 @@ const { Paragraph } = Typography;
 export default function Donate() {
   const [form] = Form.useForm();
   const [deleting, onDeleting] = useState('');
-  const [confirming, onConfirming] = useState(false);
+  const [confirming, onConfirming] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
@@ -197,7 +197,7 @@ export default function Donate() {
                       title="确认捐赠"
                       description="确认捐赠有效吗?"
                       onConfirm={() => {
-                        onConfirming(true);
+                        onConfirming(id);
                         app
                           .fetch('donate/confirm', {
                             data: {
@@ -209,7 +209,7 @@ export default function Donate() {
                             app.error(err && err.message ? err.message : err);
                           })
                           .finally(() => {
-                            onConfirming(false);
+                            onConfirming('');
                           });
                       }}
                     >
@@ -217,7 +217,7 @@ export default function Donate() {
                         danger
                         type="primary"
                         size="small"
-                        loading={confirming}
+                        loading={confirming === id}
                       >
                         确认
                       </Button>

@@ -8,8 +8,8 @@ import { getStatus } from './utils';
 const { Paragraph } = Typography;
 
 export default function Order() {
-  const [cancel, onCancel] = useState(false);
-  const [confirming, onConfirming] = useState(false);
+  const [cancel, onCancel] = useState('');
+  const [confirming, onConfirming] = useState('');
   const { app, data, limit, loading, refetch, onPager, onSearch } = usePager({
     uri: 'order/list',
     query: {
@@ -106,7 +106,7 @@ export default function Order() {
                       title="审核订单"
                       description="确认订单有效吗？"
                       onConfirm={() => {
-                        onConfirming(true);
+                        onConfirming(record.id);
                         app
                           .fetch('order/update', {
                             data: {
@@ -119,11 +119,15 @@ export default function Order() {
                             app.error(err && err.message ? err.message : err);
                           })
                           .finally(() => {
-                            onConfirming(false);
+                            onConfirming('');
                           });
                       }}
                     >
-                      <Button type="link" size="small" loading={confirming}>
+                      <Button
+                        type="link"
+                        size="small"
+                        loading={confirming === record.id}
+                      >
                         确认
                       </Button>
                     </Popconfirm>
@@ -131,7 +135,7 @@ export default function Order() {
                       title="审核订单"
                       description="确认取消订单吗?"
                       onConfirm={() => {
-                        onCancel(true);
+                        onCancel(record.id);
                         app
                           .fetch('order/update', {
                             data: {
@@ -144,11 +148,16 @@ export default function Order() {
                             app.error(err && err.message ? err.message : err);
                           })
                           .finally(() => {
-                            onCancel(false);
+                            onCancel('');
                           });
                       }}
                     >
-                      <Button danger type="link" size="small" loading={cancel}>
+                      <Button
+                        danger
+                        type="link"
+                        size="small"
+                        loading={cancel === record.id}
+                      >
                         取消
                       </Button>
                     </Popconfirm>
@@ -161,7 +170,7 @@ export default function Order() {
                     title="取消订单"
                     description="确认取消订单吗?"
                     onConfirm={() => {
-                      onCancel(true);
+                      onCancel(record.id);
                       app
                         .fetch('order/update', {
                           data: {
@@ -174,11 +183,16 @@ export default function Order() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onCancel(false);
+                          onCancel('');
                         });
                     }}
                   >
-                    <Button danger type="primary" size="small" loading={cancel}>
+                    <Button
+                      danger
+                      type="primary"
+                      size="small"
+                      loading={cancel === record.id}
+                    >
                       取消
                     </Button>
                   </Popconfirm>
