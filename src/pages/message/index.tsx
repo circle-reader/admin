@@ -26,7 +26,9 @@ export default function Message() {
     uri: 'message/list',
   });
   const handleOpen = () => {
-    setEditing({});
+    setEditing({
+      active: '1',
+    });
   };
   const handleClose = () => {
     setEditing(null);
@@ -46,14 +48,15 @@ export default function Message() {
     const data = {
       ...submit,
       active: submit.active ? '1' : '0',
-      condition: Array.isArray(submit.condition)
-        ? stringify(
-            submit.condition.map((item) => ({
-              ...item,
-              value: safeInt(item.value),
-            }))
-          )
-        : '',
+      condition:
+        Array.isArray(submit.condition) && submit.condition.length > 0
+          ? stringify(
+              submit.condition.map((item) => ({
+                ...item,
+                value: safeInt(item.value),
+              }))
+            )
+          : '',
     };
     (data.id
       ? app.fetch('message/update', {
@@ -101,12 +104,7 @@ export default function Message() {
           onCancel={handleClose}
           okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
           modalRender={(dom) => (
-            <Form
-              form={form}
-              name="message"
-              onFinish={handleFinish}
-              initialValues={{ active: true }}
-            >
+            <Form form={form} name="message" onFinish={handleFinish}>
               {dom}
             </Form>
           )}

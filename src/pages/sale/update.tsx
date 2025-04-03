@@ -83,18 +83,6 @@ export default function Update(props: IProps) {
                         value: '>',
                       },
                       {
-                        label: '大于等于',
-                        value: '>=',
-                      },
-                      {
-                        label: '小于',
-                        value: '<',
-                      },
-                      {
-                        label: '小于等于',
-                        value: '<=',
-                      },
-                      {
                         label: '等于',
                         value: '=',
                       },

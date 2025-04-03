@@ -3,7 +3,7 @@ import { safeInt } from '../utils';
 import dayjs, { Dayjs } from 'dayjs';
 import { useState, useEffect } from 'react';
 import { usePager } from 'circle-react-hook';
-import { parse, stringify } from 'circle-utils';
+import { isString, parse, stringify } from 'circle-utils';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   Tag,
@@ -26,6 +26,7 @@ export default function Sale() {
   });
   const handleOpen = () => {
     setEditing({
+      active: '1',
       begin: dayjs().unix(),
       end: dayjs().add(1, 'day').unix(),
     });
@@ -51,14 +52,24 @@ export default function Sale() {
       end: submit.end.unix(),
       begin: submit.begin.unix(),
       active: submit.active ? '1' : '0',
-      condition: Array.isArray(submit.condition)
-        ? stringify(
-            submit.condition.map((item) => ({
-              ...item,
-              value: safeInt(item.value),
-            }))
-          )
-        : '',
+      condition:
+        Array.isArray(submit.condition) && submit.condition.length > 0
+          ? stringify(
+              submit.condition.map((item) => {
+                let conditionData: any = safeInt(item.value);
+                if (isString(conditionData)) {
+                  const conditionDatas = conditionData.split(',');
+                  if (conditionDatas.length > 1) {
+                    conditionData = conditionDatas;
+                  }
+                }
+                return {
+                  ...item,
+                  value: conditionData,
+                };
+              })
+            )
+          : '',
     };
     (data.id
       ? app.fetch('sale/update', {
@@ -87,7 +98,12 @@ export default function Sale() {
         end: dayjs.unix(editing.end),
         active: '1' === editing.active,
         begin: dayjs.unix(editing.begin),
-        condition: editing.condition ? parse(editing.condition) : [],
+        condition: editing.condition
+          ? parse(editing.condition).map((item: any) => ({
+              ...item,
+              value: item.value.join(','),
+            }))
+          : [],
       });
     } else {
       form.resetFields();
@@ -108,12 +124,7 @@ export default function Sale() {
           onCancel={handleClose}
           okButtonProps={{ autoFocus: true, htmlType: 'submit' }}
           modalRender={(dom) => (
-            <Form
-              form={form}
-              name="sale"
-              onFinish={handleFinish}
-              initialValues={{ active: true }}
-            >
+            <Form form={form} name="sale" onFinish={handleFinish}>
               {dom}
             </Form>
           )}
@@ -206,7 +217,7 @@ export default function Sale() {
                   <Popconfirm
                     title="删除"
                     description="确认删除吗?"
-                    disabled={dayjs().isAfter(dayjs.unix(record.end))}
+                    disabled={dayjs().isBefore(dayjs.unix(record.end))}
                     onConfirm={() => {
                       onDeleting(id);
                       app
@@ -229,7 +240,7 @@ export default function Sale() {
                       size="small"
                       type="primary"
                       loading={deleting === id}
-                      disabled={dayjs().isAfter(dayjs.unix(record.end))}
+                      disabled={dayjs().isBefore(dayjs.unix(record.end))}
                     >
                       删除
                     </Button>

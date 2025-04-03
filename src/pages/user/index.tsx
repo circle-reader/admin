@@ -1,25 +1,72 @@
 import dayjs from 'dayjs';
+import { useState } from 'react';
 import { usePager } from 'circle-react-hook';
-import { Tag, Input, Space, Table, Typography } from 'antd';
+import { Tag, Input, Select, Space, Table, Typography } from 'antd';
 
 const { Paragraph } = Typography;
 
 export default function User() {
+  const [role, onRole] = useState('member');
+  const [excluded, onExcluded] = useState('0');
   const { data, limit, loading, onPager, onSearch } = usePager({
     uri: 'circle/list',
+    query: {
+      role,
+      excluded,
+    },
   });
 
   return (
     <Space direction="vertical" className="wrapper">
       <Space className="wrapper-header">
         <div />
-        <Input.Search
-          allowClear
-          enterButton
-          onSearch={onSearch}
-          style={{ width: 200 }}
-          placeholder="ID、用户或邮箱"
-        />
+        <Space>
+          <Select
+            value={excluded}
+            onChange={onExcluded}
+            style={{ width: 100 }}
+            options={[
+              {
+                value: '0',
+                label: '含有',
+              },
+              {
+                value: '1',
+                label: '不含',
+              },
+            ]}
+          />
+          <Select
+            value={role}
+            onChange={onRole}
+            style={{ width: 130 }}
+            options={[
+              {
+                value: 'member',
+                label: '高级帐户',
+              },
+              {
+                value: 'premium',
+                label: '专业帐户',
+              },
+              {
+                value: 'authenticated',
+                label: '验证帐户',
+              },
+              {
+                value: 'content_editor',
+                label: '编辑帐户',
+              },
+            ]}
+          />
+          <Input.Search
+            allowClear
+            enterButton
+            onSearch={onSearch}
+            style={{ width: 200 }}
+            placeholder="ID、用户或邮箱"
+          />
+        </Space>
       </Space>
       <Table
         rowKey="id"
