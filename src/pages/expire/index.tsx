@@ -20,9 +20,9 @@ const { Paragraph } = Typography;
 
 export default function Expire() {
   const [form] = Form.useForm();
+  const [deleting, onDeleting] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
-  const [deleteing, onDeleteing] = useState(false);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
     uri: 'expire/list',
   });
@@ -167,7 +167,7 @@ export default function Expire() {
                       title="删除角色过期"
                       description="确认删除角色过期吗?"
                       onConfirm={() => {
-                        onDeleteing(true);
+                        onDeleting(id);
                         app
                           .fetch('expire/remove', {
                             data: {
@@ -179,7 +179,7 @@ export default function Expire() {
                             app.error(err && err.message ? err.message : err);
                           })
                           .finally(() => {
-                            onDeleteing(false);
+                            onDeleting('');
                           });
                       }}
                     >
@@ -187,7 +187,7 @@ export default function Expire() {
                         danger
                         type="primary"
                         size="small"
-                        loading={deleteing}
+                        loading={deleting === id}
                       >
                         删除
                       </Button>

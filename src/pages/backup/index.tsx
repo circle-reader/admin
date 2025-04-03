@@ -4,7 +4,7 @@ import { usePager } from 'circle-react-hook';
 import { Input, Space, Table, Button, Popconfirm } from 'antd';
 
 export default function Backup() {
-  const [deleteing, onDeleteing] = useState(false);
+  const [deleting, onDeleting] = useState('');
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
     uri: 'storage/list',
   });
@@ -56,7 +56,7 @@ export default function Backup() {
                   title="删除备份"
                   description="确认删除备份吗?"
                   onConfirm={() => {
-                    onDeleteing(true);
+                    onDeleting(id);
                     app
                       .fetch('storage/remove', {
                         data: {
@@ -68,11 +68,16 @@ export default function Backup() {
                         app.error(err && err.message ? err.message : err);
                       })
                       .finally(() => {
-                        onDeleteing(false);
+                        onDeleting('');
                       });
                   }}
                 >
-                  <Button danger type="link" size="small" loading={deleteing}>
+                  <Button
+                    danger
+                    type="link"
+                    size="small"
+                    loading={deleting === id}
+                  >
                     删除
                   </Button>
                 </Popconfirm>

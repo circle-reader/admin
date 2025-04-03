@@ -1,7 +1,8 @@
 import Update from './update';
-import { parse } from 'circle-utils';
+import { safeInt } from '../utils';
 import { useState, useEffect } from 'react';
 import { usePager } from 'circle-react-hook';
+import { parse, stringify } from 'circle-utils';
 import { PlusOutlined } from '@ant-design/icons';
 import {
   Tag,
@@ -14,12 +15,12 @@ import {
   Popconfirm,
   Typography,
 } from 'antd';
-import './index.less';
 
 const { Text } = Typography;
 
 export default function Rule() {
   const [form] = Form.useForm();
+  const [deleting, onDeleting] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
@@ -31,18 +32,35 @@ export default function Rule() {
   const handleClose = () => {
     setEditing(null);
   };
-  const handleFinish = (data: {
+  const handleFinish = (submit: {
     id?: string;
     body: string;
     active: boolean;
+    condition?: Array<{
+      value: string;
+      type: string;
+      operator: string;
+    }>;
   }) => {
     onSubmiting(true);
+    const data = {
+      ...submit,
+      active: submit.active ? '1' : '0',
+      condition: Array.isArray(submit.condition)
+        ? stringify(
+            submit.condition.map((item) => ({
+              ...item,
+              value: safeInt(item.value),
+            }))
+          )
+        : '',
+    };
     (data.id
       ? app.fetch('rule/update', {
-          data: { ...data, active: data.active ? '1' : '0' },
+          data,
         })
       : app.fetch('rule/generate', {
-          data: { ...data, active: data.active ? '1' : '0' },
+          data,
         })
     )
       .then(() => {
@@ -59,7 +77,11 @@ export default function Rule() {
 
   useEffect(() => {
     if (editing) {
-      form.setFieldsValue({ ...editing, active: '1' === editing.active });
+      form.setFieldsValue({
+        ...editing,
+        active: '1' === editing.active,
+        condition: editing.condition ? parse(editing.condition) : [],
+      });
     } else {
       form.resetFields();
     }
@@ -125,14 +147,29 @@ export default function Rule() {
               ),
           },
           {
-            width: '80%',
+            width: '20%',
+            title: '条件',
+            dataIndex: 'condition',
+            render: (val) => {
+              if (!val) {
+                return '--';
+              }
+              return (
+                <pre className="code-wrapper">
+                  {JSON.stringify(parse(val), null, ' ')}
+                </pre>
+              );
+            },
+          },
+          {
+            width: '60%',
             title: '规则',
             dataIndex: 'body',
             render: (val) => {
               return (
                 <Space size={4} align="start">
                   <Text copyable={{ text: val }} />
-                  <pre className="rule-code">
+                  <pre className="code-wrapper">
                     {JSON.stringify(parse(val), null, ' ')}
                   </pre>
                 </Space>
@@ -157,7 +194,7 @@ export default function Rule() {
                     title="删除规则"
                     description="确认删除规则吗?"
                     onConfirm={() => {
-                      onSubmiting(true);
+                      onDeleting(id);
                       app
                         .fetch('rule/remove', {
                           data: {
@@ -169,7 +206,7 @@ export default function Rule() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onSubmiting(false);
+                          onDeleting('');
                         });
                     }}
                   >
@@ -177,7 +214,7 @@ export default function Rule() {
                       danger
                       size="small"
                       type="primary"
-                      loading={submiting}
+                      loading={deleting === id}
                     >
                       删除
                     </Button>

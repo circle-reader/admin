@@ -20,7 +20,7 @@ import {
 
 export default function Feedback() {
   const [form] = Form.useForm();
-  const [deleteing, onDeleteing] = useState(false);
+  const [deleting, onDeleting] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
@@ -206,7 +206,7 @@ export default function Feedback() {
                     title="删除反馈"
                     description="确认删除反馈吗?"
                     onConfirm={() => {
-                      onDeleteing(true);
+                      onDeleting(id);
                       app
                         .fetch('feedback/remove', {
                           data: {
@@ -218,11 +218,16 @@ export default function Feedback() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onDeleteing(false);
+                          onDeleting('');
                         });
                     }}
                   >
-                    <Button danger type="link" size="small" loading={deleteing}>
+                    <Button
+                      danger
+                      type="link"
+                      size="small"
+                      loading={deleting === id}
+                    >
                       删除
                     </Button>
                   </Popconfirm>

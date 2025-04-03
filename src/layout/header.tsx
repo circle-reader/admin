@@ -70,6 +70,10 @@ export default function CHeader() {
             label: '配置',
           },
           {
+            key: '/sale',
+            label: '活动',
+          },
+          {
             key: '/rule',
             label: '规则',
           },

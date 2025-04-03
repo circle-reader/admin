@@ -1,4 +1,13 @@
-import { Button, Form, Input, Space, Switch, Select } from 'antd';
+import {
+  Form,
+  Input,
+  Space,
+  Switch,
+  Select,
+  Button,
+  DatePicker,
+  InputNumber,
+} from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
 interface IProps {
@@ -7,16 +16,6 @@ interface IProps {
 
 export default function Update(props: IProps) {
   const { loading } = props;
-  const validator = (_: any, val: string) => {
-    try {
-      if (val) {
-        JSON.parse(val); // 尝试解析 JSON
-      }
-      return Promise.resolve();
-    } catch (error) {
-      return Promise.reject(new Error('请输入有效的 JSON 格式'));
-    }
-  };
 
   return (
     <>
@@ -119,13 +118,19 @@ export default function Update(props: IProps) {
           </>
         )}
       </Form.List>
-      <Form.Item name="body" rules={[{ required: true }, { validator }]}>
-        <Input.TextArea
-          rows={15}
-          showCount
-          maxLength={3000}
-          placeholder="规则"
-          autoComplete="off"
+      <Form.Item name="begin" rules={[{ required: true }]}>
+        <DatePicker showTime placeholder="开始时间" />
+      </Form.Item>
+      <Form.Item name="end" rules={[{ required: true }]}>
+        <DatePicker showTime placeholder="结束时间" />
+      </Form.Item>
+      <Form.Item name="discount" rules={[{ required: true }]}>
+        <InputNumber
+          max={0.99}
+          min={0.5}
+          step={0.1}
+          placeholder="折扣"
+          style={{ width: 206 }}
         />
       </Form.Item>
       <Form.Item>

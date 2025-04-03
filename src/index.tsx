@@ -1,11 +1,17 @@
+import dayjs from 'dayjs';
 import Error from '@/error';
-import { Spin } from 'antd';
 import Layout from '@/layout';
+import 'dayjs/locale/zh-cn';
+import locale from 'antd/locale/zh_CN';
 import { useApp } from 'circle-react-hook';
+import { Spin, ConfigProvider } from 'antd';
 import { lazy, Suspense, useEffect } from 'react';
 import { createHashRouter, RouterProvider } from 'react-router-dom';
 import './index.less';
 
+dayjs.locale('zh-cn');
+
+const Sale = lazy(() => import('@/pages/sale'));
 const Rule = lazy(() => import('@/pages/rule'));
 const User = lazy(() => import('@/pages/user'));
 const Code = lazy(() => import('@/pages/code'));
@@ -40,6 +46,10 @@ const router = createHashRouter([
       {
         path: '/message',
         element: <Message />,
+      },
+      {
+        path: '/sale',
+        element: <Sale />,
       },
       {
         path: '/config',
@@ -86,8 +96,10 @@ export default function App() {
   }, []);
 
   return (
-    <Suspense fallback={<Spin />}>
-      <RouterProvider router={router} />
-    </Suspense>
+    <ConfigProvider locale={locale}>
+      <Suspense fallback={<Spin />}>
+        <RouterProvider router={router} />
+      </Suspense>
+    </ConfigProvider>
   );
 }

@@ -1,6 +1,6 @@
 import Update from './update';
 import { safeInt } from '../utils';
-import Tooltip from '@/components/tooltip';
+import dayjs, { Dayjs } from 'dayjs';
 import { useState, useEffect } from 'react';
 import { usePager } from 'circle-react-hook';
 import { parse, stringify } from 'circle-utils';
@@ -15,26 +15,29 @@ import {
   Button,
   Popconfirm,
 } from 'antd';
-import './index.less';
 
-export default function Message() {
+export default function Sale() {
   const [form] = Form.useForm();
   const [deleting, onDeleting] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
-    uri: 'message/list',
+    uri: 'sale/list',
   });
   const handleOpen = () => {
-    setEditing({});
+    setEditing({
+      begin: dayjs().unix(),
+      end: dayjs().add(1, 'day').unix(),
+    });
   };
   const handleClose = () => {
     setEditing(null);
   };
   const handleFinish = (submit: {
     id?: string;
-    title: string;
-    body: string;
+    end: Dayjs;
+    begin: Dayjs;
+    discount: number;
     active: boolean;
     condition?: Array<{
       value: string;
@@ -45,6 +48,8 @@ export default function Message() {
     onSubmiting(true);
     const data = {
       ...submit,
+      end: submit.end.unix(),
+      begin: submit.begin.unix(),
       active: submit.active ? '1' : '0',
       condition: Array.isArray(submit.condition)
         ? stringify(
@@ -56,10 +61,10 @@ export default function Message() {
         : '',
     };
     (data.id
-      ? app.fetch('message/update', {
+      ? app.fetch('sale/update', {
           data,
         })
-      : app.fetch('message/generate', {
+      : app.fetch('sale/generate', {
           data,
         })
     )
@@ -79,7 +84,9 @@ export default function Message() {
     if (editing) {
       form.setFieldsValue({
         ...editing,
+        end: dayjs.unix(editing.end),
         active: '1' === editing.active,
+        begin: dayjs.unix(editing.begin),
         condition: editing.condition ? parse(editing.condition) : [],
       });
     } else {
@@ -103,7 +110,7 @@ export default function Message() {
           modalRender={(dom) => (
             <Form
               form={form}
-              name="message"
+              name="sale"
               onFinish={handleFinish}
               initialValues={{ active: true }}
             >
@@ -116,9 +123,9 @@ export default function Message() {
         <Input.Search
           allowClear
           enterButton
+          placeholder="搜索"
           onSearch={onSearch}
           style={{ width: 200 }}
-          placeholder="搜索消息"
         />
       </Space>
       <Table
@@ -139,15 +146,14 @@ export default function Message() {
             width: '10%',
             title: '状态',
             dataIndex: 'active',
-            render: (val) =>
-              '0' === val ? <Tag>草稿</Tag> : <Tag color="success">已发布</Tag>,
-          },
-          {
-            width: '20%',
-            title: '标题',
-            dataIndex: 'title',
-            render: (val) => {
-              return <Tooltip title={val}>{val}</Tooltip>;
+            render: (val, record) => {
+              if ('0' === val) {
+                return <Tag>草稿</Tag>;
+              }
+              if (dayjs().isBefore(dayjs.unix(record.end))) {
+                return <Tag color="success">已发布</Tag>;
+              }
+              return <Tag color="warning">已结束</Tag>;
             },
           },
           {
@@ -166,26 +172,22 @@ export default function Message() {
             },
           },
           {
-            width: '40%',
-            title: '内容',
-            dataIndex: 'body',
-            render: (val) => {
-              return (
-                <Tooltip
-                  trigger={['click']}
-                  className="inner-tooltip"
-                  rootClassName="root-tooltip"
-                  title={
-                    <div
-                      className="modal-tooltip"
-                      dangerouslySetInnerHTML={{ __html: val }}
-                    />
-                  }
-                >
-                  {val}
-                </Tooltip>
-              );
-            },
+            width: '20%',
+            title: '开始',
+            dataIndex: 'begin',
+            render: (val) => dayjs(val * 1000).format('YYYY-MM-DD HH:mm:ss'),
+          },
+          {
+            width: '20%',
+            title: '结束',
+            dataIndex: 'end',
+            render: (val) => dayjs(val * 1000).format('YYYY-MM-DD HH:mm:ss'),
+          },
+          {
+            width: '20%',
+            title: '折扣',
+            dataIndex: 'discount',
+            render: (val) => `${val * 10} 折`,
           },
           {
             title: '操作',
@@ -204,10 +206,11 @@ export default function Message() {
                   <Popconfirm
                     title="删除"
                     description="确认删除吗?"
+                    disabled={dayjs().isAfter(dayjs.unix(record.end))}
                     onConfirm={() => {
                       onDeleting(id);
                       app
-                        .fetch('message/remove', {
+                        .fetch('sale/remove', {
                           data: {
                             id,
                           },
@@ -226,6 +229,7 @@ export default function Message() {
                       size="small"
                       type="primary"
                       loading={deleting === id}
+                      disabled={dayjs().isAfter(dayjs.unix(record.end))}
                     >
                       删除
                     </Button>

@@ -26,7 +26,7 @@ export default function Code() {
   const [expire, onExpire] = useState('0');
   const [status, onStatus] = useState('1');
   const [role, onRole] = useState('member');
-  const [deleteing, onDeleteing] = useState(false);
+  const [deleting, onDeleting] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
@@ -256,7 +256,7 @@ export default function Code() {
                     title="删除激活码"
                     description="确认删除激活码吗?"
                     onConfirm={() => {
-                      onDeleteing(true);
+                      onDeleting(code);
                       app
                         .fetch('code/remove', {
                           data: {
@@ -268,11 +268,16 @@ export default function Code() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onDeleteing(false);
+                          onDeleting('');
                         });
                     }}
                   >
-                    <Button danger type="link" size="small" loading={deleteing}>
+                    <Button
+                      danger
+                      type="link"
+                      size="small"
+                      loading={deleting === code}
+                    >
                       删除
                     </Button>
                   </Popconfirm>

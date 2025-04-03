@@ -19,7 +19,7 @@ const { Paragraph } = Typography;
 
 export default function Donate() {
   const [form] = Form.useForm();
-  const [deleteing, onDeleteing] = useState(false);
+  const [deleting, onDeleting] = useState('');
   const [confirming, onConfirming] = useState(false);
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
@@ -167,7 +167,7 @@ export default function Donate() {
                     title="删除捐赠"
                     description="确认删除捐赠吗?"
                     onConfirm={() => {
-                      onDeleteing(true);
+                      onDeleting(id);
                       app
                         .fetch('donate/remove', {
                           data: {
@@ -179,11 +179,16 @@ export default function Donate() {
                           app.error(err && err.message ? err.message : err);
                         })
                         .finally(() => {
-                          onDeleteing(false);
+                          onDeleting('');
                         });
                     }}
                   >
-                    <Button danger type="link" size="small" loading={deleteing}>
+                    <Button
+                      danger
+                      type="link"
+                      size="small"
+                      loading={deleting === id}
+                    >
                       删除
                     </Button>
                   </Popconfirm>
