@@ -101,7 +101,9 @@ export default function Sale() {
         condition: editing.condition
           ? parse(editing.condition).map((item: any) => ({
               ...item,
-              value: item.value.join(','),
+              value: Array.isArray(item.value)
+                ? item.value.join(',')
+                : item.value,
             }))
           : [],
       });

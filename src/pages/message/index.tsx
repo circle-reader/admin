@@ -83,7 +83,14 @@ export default function Message() {
       form.setFieldsValue({
         ...editing,
         active: '1' === editing.active,
-        condition: editing.condition ? parse(editing.condition) : [],
+        condition: editing.condition
+          ? parse(editing.condition).map((item: any) => ({
+              ...item,
+              value: Array.isArray(item.value)
+                ? item.value.join(',')
+                : item.value,
+            }))
+          : [],
       });
     } else {
       form.resetFields();
