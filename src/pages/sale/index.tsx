@@ -219,7 +219,6 @@ export default function Sale() {
                   <Popconfirm
                     title="删除"
                     description="确认删除吗?"
-                    disabled={dayjs().isBefore(dayjs.unix(record.end))}
                     onConfirm={() => {
                       onDeleting(id);
                       app
@@ -242,7 +241,6 @@ export default function Sale() {
                       size="small"
                       type="primary"
                       loading={deleting === id}
-                      disabled={dayjs().isBefore(dayjs.unix(record.end))}
                     >
                       删除
                     </Button>
