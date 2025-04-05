@@ -6,13 +6,13 @@ import { Tag, Input, Select, Space, Table, Typography } from 'antd';
 const { Paragraph } = Typography;
 
 export default function User() {
-  const [role, onRole] = useState('member');
-  const [excluded, onExcluded] = useState('0');
+  const [role, onRole] = useState([]);
+  const [excluded, onExcluded] = useState('1');
   const { data, limit, loading, onPager, onSearch } = usePager({
     uri: 'circle/list',
     query: {
-      role,
       excluded,
+      role: role.join(','),
     },
   });
 
@@ -38,8 +38,9 @@ export default function User() {
           />
           <Select
             value={role}
+            mode="multiple"
             onChange={onRole}
-            style={{ width: 130 }}
+            style={{ width: 210 }}
             options={[
               {
                 value: 'member',
@@ -48,14 +49,6 @@ export default function User() {
               {
                 value: 'premium',
                 label: '专业帐户',
-              },
-              {
-                value: 'authenticated',
-                label: '验证帐户',
-              },
-              {
-                value: 'content_editor',
-                label: '编辑帐户',
               },
             ]}
           />
