@@ -1,3 +1,4 @@
+import FormItem from '@/components/condition/form';
 import { Button, Form, Input, Space, Switch, Select } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
@@ -35,9 +36,9 @@ export default function Update(props: IProps) {
                 icon={<PlusOutlined />}
                 onClick={() => {
                   add({
-                    type: 'role',
+                    value: 'ext',
+                    type: 'type',
                     operator: '=',
-                    value: 'member',
                   });
                 }}
               >
@@ -60,8 +61,12 @@ export default function Update(props: IProps) {
                     style={{ width: 200 }}
                     options={[
                       {
-                        label: '当前角色',
+                        value: 'type',
+                        label: '平台渠道',
+                      },
+                      {
                         value: 'role',
+                        label: '所属角色',
                       },
                       {
                         label: '安装时间',
@@ -84,18 +89,6 @@ export default function Update(props: IProps) {
                         value: '>',
                       },
                       {
-                        label: '大于等于',
-                        value: '>=',
-                      },
-                      {
-                        label: '小于',
-                        value: '<',
-                      },
-                      {
-                        label: '小于等于',
-                        value: '<=',
-                      },
-                      {
                         label: '等于',
                         value: '=',
                       },
@@ -106,12 +99,18 @@ export default function Update(props: IProps) {
                     ]}
                   />
                 </Form.Item>
-                <Form.Item
-                  {...restField}
-                  name={[name, 'value']}
-                  rules={[{ required: true }]}
-                >
-                  <Input size="small" />
+                <Form.Item noStyle dependencies={[['condition', name, 'type']]}>
+                  {(form) => (
+                    <Form.Item
+                      {...restField}
+                      name={[name, 'value']}
+                      rules={[{ required: true }]}
+                    >
+                      <FormItem
+                        data={form.getFieldValue(['condition', name, 'type'])}
+                      />
+                    </Form.Item>
+                  )}
                 </Form.Item>
                 <MinusCircleOutlined onClick={() => remove(name)} />
               </Space>
