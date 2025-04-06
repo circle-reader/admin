@@ -2,17 +2,28 @@ import dayjs from 'dayjs';
 import { useState } from 'react';
 import { isNumber } from 'circle-utils';
 import { usePager } from 'circle-react-hook';
-import { Tag, Button, Input, Space, Table, Popconfirm, Typography } from 'antd';
+import {
+  Tag,
+  Input,
+  Space,
+  Table,
+  Select,
+  Button,
+  Popconfirm,
+  Typography,
+} from 'antd';
 import { getStatus } from './utils';
 
 const { Paragraph } = Typography;
 
 export default function Order() {
   const [cancel, onCancel] = useState('');
+  const [status, onStatus] = useState('done');
   const [confirming, onConfirming] = useState('');
   const { app, data, limit, loading, refetch, onPager, onSearch } = usePager({
     uri: 'order/list',
     query: {
+      status,
       order: 'create',
     },
   });
@@ -21,13 +32,25 @@ export default function Order() {
     <Space direction="vertical" className="wrapper">
       <Space className="wrapper-header">
         <div />
-        <Input.Search
-          allowClear
-          enterButton
-          onSearch={onSearch}
-          style={{ width: 200 }}
-          placeholder="ID、角色或支付方式"
-        />
+        <Space>
+          <Select
+            allowClear
+            value={status}
+            onChange={onStatus}
+            style={{ width: 100 }}
+            options={[
+              { label: '已完成', value: 'done' },
+              { label: '已取消', value: 'cancel' },
+            ]}
+          />
+          <Input.Search
+            allowClear
+            enterButton
+            onSearch={onSearch}
+            style={{ width: 200 }}
+            placeholder="ID、角色或支付方式"
+          />
+        </Space>
       </Space>
       <Table
         rowKey="id"
