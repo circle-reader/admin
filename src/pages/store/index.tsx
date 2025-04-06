@@ -193,11 +193,11 @@ export default function Store() {
                     title="审核应用"
                     description="确认审核应用吗?"
                     onConfirm={() => {
-                      onApprove(id);
+                      onApprove(record.nid);
                       app
                         .fetch('store/update', {
                           data: {
-                            id,
+                            id: record.nid,
                           },
                         })
                         .then(refetch)
@@ -213,7 +213,7 @@ export default function Store() {
                       danger
                       size="small"
                       type="primary"
-                      loading={approve === id}
+                      loading={approve === record.nid}
                     >
                       审核
                     </Button>
