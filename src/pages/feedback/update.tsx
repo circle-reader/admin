@@ -16,7 +16,17 @@ export default function Update(props: IProps) {
         <Input />
       </Form.Item>
       <Form.Item hidden name="uid">
-        <Input placeholder="UID" />
+        <Input />
+      </Form.Item>
+      <Form.Item name="env">
+        <Select
+          placeholder="平台"
+          options={[
+            { label: '扩展', value: 'ext' },
+            { label: '油猴', value: 'monkey' },
+            { label: '在线', value: 'web' },
+          ]}
+        />
       </Form.Item>
       <Form.Item
         name="uri"

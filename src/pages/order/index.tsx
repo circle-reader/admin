@@ -18,13 +18,13 @@ const { Paragraph } = Typography;
 
 export default function Order() {
   const [cancel, onCancel] = useState('');
-  const [status, onStatus] = useState('done');
+  const [status, onStatus] = useState('');
   const [confirming, onConfirming] = useState('');
   const { app, data, limit, loading, refetch, onPager, onSearch } = usePager({
     uri: 'order/list',
     query: {
-      status,
       order: 'create',
+      status: status || '',
     },
   });
 

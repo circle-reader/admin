@@ -13,6 +13,7 @@ import {
   Input,
   Space,
   Table,
+  Select,
   Button,
   Popconfirm,
   Typography,
@@ -23,22 +24,25 @@ const { Paragraph } = Typography;
 
 export default function Feedback() {
   const [form] = Form.useForm();
+  const [env, onEnv] = useState('');
   const [deleting, onDeleting] = useState('');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
     uri: 'feedback/list',
     query: {
+      env: env || '',
       order: 'create',
     },
   });
   const handleOpen = () => {
-    setEditing({});
+    setEditing({ env: 'ext' });
   };
   const handleClose = () => {
     setEditing(null);
   };
   const handleFinish = (values: {
+    env: string;
     id: string;
     uri: string;
     desc: string;
@@ -117,13 +121,26 @@ export default function Feedback() {
         >
           <Update loading={submiting} />
         </Modal>
-        <Input.Search
-          allowClear
-          enterButton
-          onSearch={onSearch}
-          style={{ width: 200 }}
-          placeholder="搜索描述"
-        />
+        <Space>
+          <Select
+            allowClear
+            value={env}
+            onChange={onEnv}
+            style={{ width: 100 }}
+            options={[
+              { label: '扩展', value: 'ext' },
+              { label: '油猴', value: 'monkey' },
+              { label: '网页', value: 'web' },
+            ]}
+          />
+          <Input.Search
+            allowClear
+            enterButton
+            onSearch={onSearch}
+            style={{ width: 200 }}
+            placeholder="搜索描述"
+          />
+        </Space>
       </Space>
       <Table
         rowKey="id"
