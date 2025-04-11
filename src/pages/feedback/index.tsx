@@ -15,8 +15,11 @@ import {
   Table,
   Button,
   Popconfirm,
+  Typography,
   Tooltip as CTooltip,
 } from 'antd';
+
+const { Paragraph } = Typography;
 
 export default function Feedback() {
   const [form] = Form.useForm();
@@ -140,8 +143,18 @@ export default function Feedback() {
             width: '30%',
             title: '描述',
             dataIndex: 'desc',
-            render: (val) => {
-              return <Tooltip title={val}>{val}</Tooltip>;
+            render: (val, record) => {
+              return (
+                <Space split="-" style={{ alignItems: 'self-start' }}>
+                  <Paragraph
+                    copyable
+                    style={{ margin: 0, whiteSpace: 'nowrap' }}
+                  >
+                    {record.id}
+                  </Paragraph>
+                  <Tooltip title={val}>{val}</Tooltip>
+                </Space>
+              );
             },
           },
           {

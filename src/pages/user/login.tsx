@@ -5,7 +5,12 @@ export default function Login() {
   const { app } = useApp();
   const handleLogin = () => {
     app.fire('account', 'login', () => {
-      app.fire('account');
+      if (app.user.roles.includes('administrator')) {
+        app.fire('account');
+      } else {
+        app.error('当前用户非管理员，请重新登录');
+        this.fire('user_refresh', { uid: '0', roles: [], is_logged_in: false });
+      }
     });
   };
 
