@@ -150,7 +150,7 @@ export default function Feedback() {
                     copyable
                     style={{ margin: 0, whiteSpace: 'nowrap' }}
                   >
-                    {record.id}
+                    {record.uid}
                   </Paragraph>
                   <Tooltip title={val}>{val}</Tooltip>
                 </Space>

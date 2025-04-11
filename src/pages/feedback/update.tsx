@@ -15,8 +15,8 @@ export default function Update(props: IProps) {
       <Form.Item hidden name="id">
         <Input />
       </Form.Item>
-      <Form.Item name="uid" rules={[{ required: true }]}>
-        <Input placeholder="用户 ID" />
+      <Form.Item hidden name="uid">
+        <Input placeholder="UID" />
       </Form.Item>
       <Form.Item
         name="uri"
