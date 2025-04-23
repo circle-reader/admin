@@ -2,9 +2,9 @@ import dayjs from 'dayjs';
 import Update from './update';
 import Tooltip from '@/components/tooltip';
 import { useEffect, useState } from 'react';
-import { getType, getStatus } from './utils';
 import { usePager } from 'circle-react-hook';
 import { each, isUndefined } from 'circle-utils';
+import { getType, getStatus, getStatusItems } from './utils';
 import { PlusOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import {
   Tag,
@@ -24,13 +24,16 @@ const { Paragraph } = Typography;
 
 export default function Feedback() {
   const [form] = Form.useForm();
-  const [env, onEnv] = useState('');
+  const [env, onEnv] = useState('ext');
+  const statusItems = getStatusItems();
   const [deleting, onDeleting] = useState('');
+  const [status, onStatus] = useState('pending');
   const [submiting, onSubmiting] = useState(false);
   const [editing, setEditing] = useState<any>(null);
   const { app, data, limit, loading, onPager, onSearch, refetch } = usePager({
     uri: 'feedback/list',
     query: {
+      status,
       env: env || '',
       order: 'create',
     },
@@ -132,6 +135,16 @@ export default function Feedback() {
               { label: '油猴', value: 'monkey' },
               { label: '网页', value: 'web' },
             ]}
+          />
+          <Select
+            allowClear
+            value={status}
+            onChange={onStatus}
+            style={{ width: 100 }}
+            options={Object.keys(statusItems).map((key) => ({
+              value: key,
+              label: statusItems[key].label,
+            }))}
           />
           <Input.Search
             allowClear
